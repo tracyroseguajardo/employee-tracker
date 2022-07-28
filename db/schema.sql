@@ -3,13 +3,13 @@ CREATE DATABASE personelle_db;
 
 USE personelle_db;
 
-CREATE TABLE department (
+CREATE TABLE departments (
   id INT NOT NULL,
   name VARCHAR(30),
   PRIMARY KEY (id)
 );
 
-CREATE TABLE role (
+CREATE TABLE roles (
   id INT NOT NULL,
   title VARCHAR(30),
   salary DECIMAL,
@@ -19,7 +19,7 @@ CREATE TABLE role (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE employee (
+CREATE TABLE employees (
   id INT NOT NULL,
   first_name VARCHAR(30),
   last_name VARCHAR(30),
