@@ -1,8 +1,7 @@
 // Packages
 const inquirer = require("inquirer");
 require("console.table");
-const db = require('./db')
-
+const db = require('./db');
 
 const menuQuestion =
 {
@@ -19,72 +18,7 @@ const menuQuestion =
         "update an employee role",
         'quit'
     ]
-}
-
-const departmentQuestions =
-{
-    type: "input",
-    message: "What is the department you would like to add?",
-    name: "newDepartment",
-}
-
-const roleQuestions = [
-    {
-        type: "input",
-        message: "What is the role/job title?",
-        name: "role",
-    },
-    {
-        type: "input",
-        message: "What is the salary for this role?",
-        name: "salary",
-    },
-    {
-        type: "input",
-        message: "What is the department for this role?",
-        name: "department",
-    },
-]
-
-const employeeQuestions = [
-    {
-        type: "input",
-        message: "What is the employee's first name?",
-        name: "firstName",
-    },
-    {
-        type: "input",
-        message: "What is the employee's last name?",
-        name: "lastName",
-    },
-    {
-        type: "input",
-        message: "What is the employee's role?",
-        name: "role",
-    },
-    {
-        type: "input",
-        message: "Who is the employee's manager?",
-        name: "manager",
-    },
-]
-
-const updateEmployee = [
-    {
-        type: "list",
-        message: "Select an employee:",
-        name: "updateEmployee",
-        // TO DO: write function to list all employees by name and call it here
-        // choices: []
-    },
-    {
-        type: "list",
-        message: "Select a new role:",
-        name: "updateRole",
-        // TO DO: write function to list all roles and call it here
-        // choices: []
-    },
-]
+};
 
 function menu() {
     inquirer.prompt(menuQuestion).then((answer) => {
@@ -95,56 +29,211 @@ function menu() {
             case "view all roles":
                 viewAllRoles()
                 break;
+            case "view all employees":
+                viewAllEmployees()
+                break;
             case "add a department":
-                console.log("Chose to add a new department");
-                inquirer
-                    .prompt(departmentQuestions).then((answers) => {
-                        // add to database
-                        menu()
-                    })
+                saveDept();
                 break;
             case "add a role":
-                console.log("Chose to add a new role");
-                inquirer
-                    .prompt(roleQuestions).then((answers) => {
-                        // add to database
-                        menu()
-                    })
+                saveRole()
                 break;
             case "add an employee":
-                console.log("Chose to add a new employee");
-                inquirer
-                    .prompt(employeeQuestions).then((answers) => {
-                        // add to database
-                        menu()
-                    })
+                createEmployee();
                 break;
-            case "Update an employee role":
-                console.log("chose update an employee role");
-                inquirer
-                    .prompt(updateEmployee).then((answers) => {
-                        // add to database
-                        menu()
-                    })
+            case "update an employee role":
+                updateEmployee();
                 break;
-                default:
-                    process.exit();
+            default:
+                process.exit();
         }
     })
-}
-
-
+};
 
 function viewAllDepartments() {
     db.findAllDepartments().then(([data]) => {
         console.table(data)
     }).then(() => menu())
-}
+};
 
-function viewAllRoles(){
+function viewAllRoles() {
     db.findAllRoles().then(([data]) => {
         console.table(data)
     }).then(() => menu())
+};
+
+function viewAllEmployees() {
+    db.findAllEmployees().then(([data]) => {
+        console.table(data)
+    }).then(() => menu())
+};
+
+const departmentQuestions =
+{
+    type: "input",
+    message: "What department would you like to add?",
+    name: "name",
+};
+
+function saveDept() {
+    inquirer
+        .prompt(departmentQuestions).then((res) => {
+            db.addToDepartment(res)
+                .then(() => menu())
+        })
 }
+
+function saveRole() {
+    db.findAllDepartments().then(([data]) => {
+        const deptChoices = data.map((department) => ({
+            name: department.name,
+            value: department.id
+        }));
+
+        inquirer
+            .prompt([
+                {
+                    type: "input",
+                    message: "What is the role/job title?",
+                    name: "title",
+                },
+                {
+                    type: "input",
+                    message: "What is the salary for this role?",
+                    name: "salary",
+                },
+                {
+                    type: "list",
+                    message: "What is the department for this role?",
+                    name: "department_id",
+                    choices: [
+                            deptChoices[0],
+                            deptChoices[1],
+                            deptChoices[2],
+                            deptChoices[3],
+                            deptChoices[4],
+                            deptChoices[5],
+                            deptChoices[6],
+                            deptChoices[7],
+                            deptChoices[8],
+                            deptChoices[9],
+                    ],
+                }
+            ])
+            .then((res) => {
+                db.addToRole(res)
+                    .then(() => menu())
+            })
+    })
+};
+
+function createEmployee() {
+    db.findAllRoles().then(([data]) => {
+        const roleChoices = data.map((role) => ({
+            name: role.title,
+            value: role.id
+        }));
+        console.log(roleChoices);
+
+        inquirer.prompt([
+            {
+                type: "input",
+                message: "What is the employee's first name?",
+                name: "first_name",
+            },
+            {
+                type: "input",
+                message: "What is the employee's last name?",
+                name: "last_name",
+            },
+            {
+                type: "list",
+                message: "What is the employee's role?",
+                name: "role_id",
+                choices: [
+                    roleChoices[0],
+                    roleChoices[1],
+                    roleChoices[2],
+                    roleChoices[3],
+                    roleChoices[4],
+                    roleChoices[5],
+                    roleChoices[6],
+                ]
+            },
+            {
+                type: "list",
+                message: "Who is the employee's manager?",
+                name: "manager_id",
+                choices: [
+                    "1",
+                    "2"
+                ]
+            },
+        ])
+        .then((res) => {
+            db.addToEmployee(res)
+                .then(() => menu())
+        })
+
+
+    })    
+};
+
+function updateEmployee() {
+    db.findAllEmployees().then(([data]) => {
+        // console.log(data);
+        const employeeChoices = data.map((employee) => ({
+            name: (employee.first_name + ' ' + employee.last_name),
+            value: employee.id
+        }));
+
+    db.findAllRoles().then(([data]) => {
+        // console.log(data);
+        const roleChoices = data.map((role) => ({
+            name: role.title,
+            value: role.id
+        }));
+           
+        inquirer.prompt([
+            {
+                type: "list",
+                message: "Which employee would you like to update?",
+                name: "name",
+                choices: [
+                    employeeChoices[0],
+                    employeeChoices[1],
+                    employeeChoices[2],
+                    employeeChoices[3],
+                    employeeChoices[4],
+                    employeeChoices[5],
+                    employeeChoices[6],
+                    employeeChoices[7],
+                ]
+            },
+            {
+                type: "list",
+                message: "What is the employee's new role?",
+                name: "role_id",
+                choices: [
+                    roleChoices[0],
+                    roleChoices[1],
+                    roleChoices[2],
+                    roleChoices[3],
+                    roleChoices[4],
+                    roleChoices[5],
+                    roleChoices[6]
+
+                ]
+            },
+        ])
+        .then((res) => {
+            // console.log(res);
+            db.updateEmployee(res)
+                .then(() => menu())
+        })
+
+    })
+    })    
+};
 
 menu()
