@@ -114,9 +114,7 @@ function saveRole() {
                             deptChoices[4],
                             deptChoices[5],
                             deptChoices[6],
-                            deptChoices[7],
-                            deptChoices[8],
-                            deptChoices[9],
+                            deptChoices[7]
                     ],
                 }
             ])
@@ -163,6 +161,7 @@ function createEmployee() {
                     roleChoices[4],
                     roleChoices[5],
                     roleChoices[6],
+                    roleChoices[7],
                 ]
             },
             {
@@ -176,6 +175,9 @@ function createEmployee() {
                     managerChoices[3],
                     managerChoices[4],
                     managerChoices[5],
+                    managerChoices[6],
+                    managerChoices[7]
+
                 ]
             },
         ])

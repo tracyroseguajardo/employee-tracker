@@ -49,3 +49,6 @@ Link to github repository for this application:
 
 Screenshot of application:
 ![Employee Tracker](./assets/employee-tracker-screenshot.png)
+
+Link to walkthrough video, which shows the application in use:
+[Employee Tracker Walkthrough](https://watch.screencastify.com/v/oNhVK55ldcwaMduCtMpS)
