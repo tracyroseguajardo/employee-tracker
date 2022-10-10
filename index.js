@@ -134,6 +134,11 @@ function createEmployee() {
             value: role.id
         }));
         console.log(roleChoices);
+        db.findAllEmployees().then(([data]) => {
+            const managerChoices = data.map((employee) => ({
+                name: (employee.first_name + ' ' + employee.last_name),
+                value: employee.id
+            }));    
 
         inquirer.prompt([
             {
@@ -165,8 +170,12 @@ function createEmployee() {
                 message: "Who is the employee's manager?",
                 name: "manager_id",
                 choices: [
-                    "1",
-                    "2"
+                    managerChoices[0],
+                    managerChoices[1],
+                    managerChoices[2],
+                    managerChoices[3],
+                    managerChoices[4],
+                    managerChoices[5],
                 ]
             },
         ])
@@ -176,7 +185,8 @@ function createEmployee() {
         })
 
 
-    })    
+    }) 
+    })   
 };
 
 function updateEmployee() {
